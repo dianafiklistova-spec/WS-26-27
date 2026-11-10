@@ -8,9 +8,9 @@
     'x-data': '{ submitting: false }',
     'x-on:submit': 'submitting = true',
   })
-    @field.root({ name: 'fullName' })
-      @!field.label({ text: 'Full name' })
-      @!input.control({ autocomplete: 'name', placeholder: 'Ada Lovelace' })
+    @field.root({ name: 'username' })
+      @!field.label({ text: 'Username' })
+      @!input.control({ autocomplete: 'username', placeholder: 'ada_lovelace' })
       @!field.error()
     @end
     @field.root({ name: 'email' })
