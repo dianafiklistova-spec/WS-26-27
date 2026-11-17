@@ -25,6 +25,13 @@
             @link({ route: 'dashboard', class: 'btn btn--primary btn--sm' })
               Dashboard
             @end
+            {{-- Logout nur per POST-Formular, damit der CSRF-Schutz greift --}}
+            @form({ route: 'session.destroy', method: 'POST' })
+              <button type="submit" class="btn btn--secondary btn--sm">
+                @svg('lucide:log-out', { width: 15, height: 15 })
+                Log out
+              </button>
+            @end
           @else
             @link({ route: 'session.create', class: 'btn btn--ghost btn--sm' })
               Sign in
