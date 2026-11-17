@@ -7,6 +7,15 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class CitySchema extends BaseModel {
+  static $columns = ['id', 'name'] as const
+  $columns = CitySchema.$columns
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+}
+
 export class UserSchema extends BaseModel {
   static $columns = [
     'bio',
