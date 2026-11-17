@@ -1,0 +1,21 @@
+@layouts.marketing()
+  <div class="home">
+    <article class="prose-card">
+      <div class="pc-top">
+        <span class="pc-status mono tag" style="color: var(--subtle);">
+          <span class="dot"></span>
+          403
+        </span>
+      </div>
+      <div class="pc-lead"><span>Kein Zugriff.</span> <em>Diese Seite ist für dich gesperrt.</em></div>
+      <p class="pc-para">
+        Du hast keine Berechtigung, diese Seite aufzurufen.
+      </p>
+      <p class="pc-para">
+        @link({ route: 'home', class: 'il' })
+          Zurück zur Startseite
+        @end
+      </p>
+    </article>
+  </div>
+@end
