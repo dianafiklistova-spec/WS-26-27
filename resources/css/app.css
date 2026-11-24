@@ -3,29 +3,44 @@
    Tokens are the only thing you need to touch to re-theme.
    ========================================================================== */
 
-:root {
-  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
-  --serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+ :root {
+  /* Typography */
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Bricolage Grotesque', sans-serif;
+  --mono: monospace;
+  --serif: Georgia, serif;
 
-  --paper: #f5f5f6;
+  /* Colors */
+  --paper: #faf9f6;
   --card: #ffffff;
-  --ink: #0a0a0b;
-  --ink-2: #2a2c30;
-  --muted: #6b6f76;
+  --ink: #24272b;
+  --ink-2: #344e41;
+  --muted: #626970;
   --subtle: #a4a8af;
-  --line: #ededee;
+  --line: #e4e5e6;
   --line-2: #dddfe2;
-  --btn: #0a0a0b;
-  --btn-fg: #ffffff;
-  --ring: rgba(10, 10, 11, 0.13);
-  --field: #ffffff;
-  --ok: #18794e;
 
+  /* Brand colors */
+  --accent: #e85d3f;
+  --primary: #c94b30;
+  --primary-hover: #a83d26;
+  --green: #344e41;
+  --green-soft: #e8efea;
+
+  /* Components */
+  --btn: var(--primary);
+  --btn-fg: #ffffff;
+  --ring: rgba(52, 78, 65, 0.2);
+  --field: #faf9f6;
+  --ok: var(--green);
+
+  /* Border radius */
   --r: 8px;
-  --r-lg: 14px;
+  --r-lg: 16px;
+
   color-scheme: light;
 }
+
 
 :root[data-theme='dark'] {
   --paper: #08080a;
