@@ -27,6 +27,11 @@ router
   .group(() => {
     router.on('/dashboard').render('pages/dashboard').as('dashboard')
     router.post('logout', [controllers.Session, 'destroy'])
+
+    // Eigenes Profil (US-02)
+    router.get('profile', [controllers.Profile, 'show'])
+    router.get('profile/edit', [controllers.Profile, 'edit'])
+    router.post('profile', [controllers.Profile, 'update'])
   })
   .use(middleware.auth())
 
