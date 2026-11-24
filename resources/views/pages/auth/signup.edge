@@ -1,61 +1,264 @@
-@layouts.auth()
-  <h1 class="auth__title">Create your account</h1>
-  <p class="auth__sub">Start building with the starter kit.</p>
-  @form({
-    route: 'new_account.store',
-    method: 'POST',
-    class: 'auth__form',
-    'x-data': '{ submitting: false }',
-    'x-on:submit': 'submitting = true',
-  })
-    @field.root({ name: 'username' })
-      @!field.label({ text: 'Username' })
-      @!input.control({ autocomplete: 'username', placeholder: 'ada_lovelace' })
-      @!field.error()
-    @end
-    @field.root({ name: 'email' })
-      @!field.label({ text: 'Email' })
-      @!input.control({
-        type: 'email',
-        autocomplete: 'email',
-        placeholder: 'you@example.com',
-      })
-      @!field.error()
-    @end
-    @field.root({ name: 'password' })
-      @!field.label({ text: 'Password' })
-      @!input.control({
-        type: 'password',
-        autocomplete: 'new-password',
-        placeholder: '••••••••',
-      })
-      @!field.error()
-    @end
-    @field.root({ name: 'passwordConfirmation' })
-      @!field.label({ text: 'Confirm password' })
-      @!input.control({
-        type: 'password',
-        autocomplete: 'new-password',
-        placeholder: '••••••••',
-      })
-      @!field.error()
-    @end
-    @!button({
-      text: 'Create account',
-      type: 'submit',
-      block: true,
-      style: 'margin-top: 4px;',
-      'x-bind:disabled': 'submitting',
-      'x-text': "submitting ? 'One moment…' : 'Create account'",
-    })
-  @end
+{{--
+  P11 · Registrierung (US-01)
+  Design: design-references/SPOTTED_P11_Registrierung_Desktop.html
 
-  <p class="auth__foot">
-    
-    Already have an account?
+  Diese Seite rendert ein eigenes, schlankes HTML-Gerüst (SPOTTED-Header),
+  damit das gemeinsame Layout components/layouts/auth.edge unverändert bleibt.
 
-    @link({ route: 'session.create', class: 'il' })
-      Sign in
-    @end
-  </p>
-@end
+  Formular → POST new_account.store → NewAccountController.store()
+  Bei Validierungsfehlern leitet AdonisJS zurück; Fehler (inputErrorsBag) und
+  alte Werte (außer Passwörtern) kommen per Flash-Session zurück.
+--}}
+@let(errors = flashMessages.get('inputErrorsBag', {}))
+@let(errorCount = Object.keys(errors).length)
+@let(hasErrors = errorCount > 0)
+@let(fieldLabels = {
+  username: 'Benutzername',
+  email: 'E-Mail-Adresse',
+  password: 'Passwort',
+  passwordConfirmation: 'Passwort bestätigen',
+})
+
+{{-- Icons 1:1 aus dem Wireframe --}}
+@let(iconCompass = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>')
+@let(iconAlert = '<svg class="sp-summary__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5"/><path d="M12 16.2v.3"/></svg>')
+@let(iconInfo = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8v.2"/></svg>')
+@let(iconMail = '<svg class="sp-input__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7.5l8 6 8-6"/></svg>')
+@let(iconLock = '<svg class="sp-input__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>')
+@let(iconEye = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>')
+@let(iconEyeOff = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2"/><path d="M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a10 10 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>')
+@let(iconCheckSmall = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>')
+@let(iconArrow = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>')
+
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registrieren – SPOTTED</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap"
+    />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('dumper')
+  </head>
+  <body class="sp">
+    {{-- ① Header · vereinfacht für Login / Registrierung --}}
+    <header class="sp-header">
+      <div class="sp-header__inner">
+        @link({ route: 'home', class: 'sp-logo', 'aria-label': 'SPOTTED – zur Startseite' })
+          SPOTTED<span class="sp-logo__dot" aria-hidden="true"></span>
+        @end
+        <nav class="sp-nav" aria-label="Hauptnavigation">
+          @link({ route: 'home', class: 'sp-nav__link' })
+            {{{ iconCompass }}}Feed
+          @end
+        </nav>
+      </div>
+    </header>
+
+    <main class="sp-main">
+      {{-- ② Formular-Karte --}}
+      <section class="sp-card" aria-labelledby="h-reg">
+        <span class="sp-badge" aria-hidden="true"><span class="sp-dot"></span>Neu hier?</span>
+
+        <div class="sp-intro">
+          <p class="sp-eyebrow"><span class="sp-dot" aria-hidden="true"></span>Registrierung</p>
+          <h1 id="h-reg" class="sp-title">Konto <span class="sp-highlight">erstellen</span></h1>
+          <p class="sp-lead">Mit deinem Konto teilst du eigene Spots, stimmst ab und kommentierst.</p>
+          <p class="sp-note">Felder mit <span class="sp-req">*</span> sind Pflichtfelder.</p>
+        </div>
+
+        @form({
+          route: 'new_account.store',
+          method: 'POST',
+          class: 'sp-form',
+          novalidate: true,
+          'x-data': "{ submitting: false, pw: '', pw2: '', showPw: false, showPw2: false }",
+          'x-on:submit': "submitting = true; $refs.username.value = $refs.username.value.trim().replace(/^@+/, '')",
+        })
+          {{-- Fehlerzusammenfassung --}}
+          @if(hasErrors)
+            <div class="sp-summary" role="alert">
+              {{{ iconAlert }}}
+              <div class="sp-summary__body">
+                <p class="sp-summary__title">
+                  Fast geschafft – bitte prüfe noch {{ errorCount === 1 ? '1 Angabe' : errorCount + ' Angaben' }}:
+                </p>
+                <ul class="sp-summary__list">
+                  @each((messages, field) in errors)
+                    <li>
+                      <a href="#{{ field }}">{{ fieldLabels[field] ?? field }}</a>
+                    </li>
+                  @end
+                </ul>
+              </div>
+            </div>
+          @end
+
+          {{-- Benutzername --}}
+          @field.root({ name: 'username' })
+            @field.label()
+              Benutzername <span class="sp-req" aria-hidden="true">*</span>
+            @end
+            <div class="sp-input">
+              <span class="sp-input__prefix" aria-hidden="true">@</span>
+              @!input.control({
+                class: 'sp-input__control',
+                autocomplete: 'username',
+                required: true,
+                placeholder: 'z. B. mila_spottet',
+                'x-ref': 'username',
+                'aria-describedby': errors.username ? 'username-help username-error' : 'username-help',
+              })
+            </div>
+            <p id="username-help" class="sp-help">So erscheinst du bei deinen Spots und Kommentaren.</p>
+            @!field.error()
+          @end
+
+          {{-- E-Mail-Adresse --}}
+          @field.root({ name: 'email' })
+            @field.label()
+              E-Mail-Adresse <span class="sp-req" aria-hidden="true">*</span>
+            @end
+            <div class="sp-input">
+              {{{ iconMail }}}
+              @!input.control({
+                class: 'sp-input__control',
+                type: 'email',
+                autocomplete: 'email',
+                required: true,
+                placeholder: 'name@beispiel.de',
+                'aria-describedby': errors.email ? 'email-help email-error' : 'email-help',
+              })
+            </div>
+            <p id="email-help" class="sp-help">Brauchst du zum Anmelden – wird nicht öffentlich angezeigt.</p>
+            @!field.error()
+          @end
+
+          {{-- ③ Passwort --}}
+          @field.root({ name: 'password' })
+            @field.label()
+              Passwort <span class="sp-req" aria-hidden="true">*</span>
+            @end
+            @if(hasErrors)
+              <p id="password-info" class="sp-info">
+                {{{ iconInfo }}}Aus Sicherheitsgründen bitte beide Passwortfelder neu ausfüllen.
+              </p>
+            @end
+            <div class="sp-input sp-input--toggle">
+              {{{ iconLock }}}
+              @!input.control({
+                class: 'sp-input__control',
+                type: 'password',
+                autocomplete: 'new-password',
+                required: true,
+                minlength: 8,
+                placeholder: 'Mindestens 8 Zeichen',
+                'x-model': 'pw',
+                'x-bind:type': "showPw ? 'text' : 'password'",
+                'aria-describedby': [
+                  hasErrors ? 'password-info' : '',
+                  errors.password ? 'password-error' : 'password-rule',
+                ].join(' ').trim(),
+              })
+              <button
+                type="button"
+                class="sp-eye"
+                aria-controls="password"
+                aria-label="Passwort anzeigen"
+                aria-pressed="false"
+                x-on:click="showPw = !showPw"
+                x-bind:aria-label="showPw ? 'Passwort verbergen' : 'Passwort anzeigen'"
+                x-bind:aria-pressed="showPw ? 'true' : 'false'"
+              >
+                <span x-show="!showPw">{{{ iconEye }}}</span>
+                <span x-show="showPw" x-cloak>{{{ iconEyeOff }}}</span>
+              </button>
+            </div>
+            @if(!errors.password)
+              <p id="password-rule" class="sp-rule" x-bind:class="pw.length >= 8 && 'is-ok'">
+                <span class="sp-rule__mark" aria-hidden="true">{{{ iconCheckSmall }}}</span>
+                <span
+                  x-text="'Mindestens 8 Zeichen' + (pw.length > 0 && pw.length < 8 ? ' · noch ' + (8 - pw.length) : '')"
+                >Mindestens 8 Zeichen</span>
+              </p>
+            @end
+            @!field.error()
+          @end
+
+          {{-- Passwort bestätigen --}}
+          @field.root({ name: 'passwordConfirmation' })
+            @field.label()
+              Passwort bestätigen <span class="sp-req" aria-hidden="true">*</span>
+            @end
+            <div class="sp-input sp-input--toggle">
+              {{{ iconLock }}}
+              @!input.control({
+                class: 'sp-input__control',
+                type: 'password',
+                autocomplete: 'new-password',
+                required: true,
+                placeholder: 'Passwort wiederholen',
+                'x-model': 'pw2',
+                'x-bind:type': "showPw2 ? 'text' : 'password'",
+                'aria-describedby': errors.passwordConfirmation
+                  ? 'passwordConfirmation-error'
+                  : 'passwordConfirmation-ok',
+              })
+              <button
+                type="button"
+                class="sp-eye"
+                aria-controls="passwordConfirmation"
+                aria-label="Passwort anzeigen"
+                aria-pressed="false"
+                x-on:click="showPw2 = !showPw2"
+                x-bind:aria-label="showPw2 ? 'Passwort verbergen' : 'Passwort anzeigen'"
+                x-bind:aria-pressed="showPw2 ? 'true' : 'false'"
+              >
+                <span x-show="!showPw2">{{{ iconEye }}}</span>
+                <span x-show="showPw2" x-cloak>{{{ iconEyeOff }}}</span>
+              </button>
+            </div>
+            <p
+              id="passwordConfirmation-ok"
+              class="sp-rule is-ok"
+              x-show="pw.length > 0 && pw2 === pw"
+              x-cloak
+            >
+              <span class="sp-rule__mark" aria-hidden="true">{{{ iconCheckSmall }}}</span>
+              Passwörter stimmen überein
+            </p>
+            @!field.error()
+          @end
+
+          {{-- ④ Registrieren --}}
+          @button({
+            type: 'submit',
+            variant: 'primary',
+            block: true,
+            class: 'sp-submit',
+            'x-bind:disabled': 'submitting',
+          })
+            <span x-text="submitting ? 'Einen Moment …' : 'Registrieren'">Registrieren</span>{{{ iconArrow }}}
+          @end
+        @end
+
+        {{-- ⑤ Zum Login --}}
+        <div class="sp-foot">
+          <p>
+            Du hast bereits ein Konto?
+            @link({ route: 'session.create', class: 'sp-foot__link' })
+              Anmelden
+            @end
+          </p>
+        </div>
+      </section>
+    </main>
+
+    @include('partials/flash_alerts')
+  </body>
+</html>
