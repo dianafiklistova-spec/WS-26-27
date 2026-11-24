@@ -1,28 +1,41 @@
-import User from '#models/user' /* holt das user-model, das werkzeug für die tabelle users. genau wie das city-model in app/models/city.ts. */
-import { signupValidator } from '#validators/user' /* holt die prüfregeln für das formular. benutzername 3-30 zeichen, email muss gültig sein, passwort 8-32 zeichen. */
-import type { HttpContext } from '@adonisjs/core/http' /* HttpContext ist ein "Paket" mit allem rund um eine anfrage: request, response, auth und view. */
+// Das User-Model, das Werkzeug für die Tabelle "users" (genau wie das City-Model in app/models/city.ts)
+import User from '#models/user'
+// Die Prüfregeln für das Formular: Benutzername 3-30 Zeichen, gültige E-Mail, Passwort 8-32 Zeichen
+import { signupValidator } from '#validators/user'
+// HttpContext ist ein "Paket" mit allem rund um eine Anfrage: request, response, auth und view
+import type { HttpContext } from '@adonisjs/core/http'
 
 /**
- * NewAccountController handles user registration.
- * It provides methods for displaying the signup page and creating
- * new user accounts.
+ * Registrierung (US-01)
+ * Zeigt das Registrierungsformular an und legt neue Nutzerkonten an.
  */
-export default class NewAccountController { /* die klasse für die registrierung */
+export default class NewAccountController {
   /**
-   * Display the signup page
+   * GET /signup – zeigt das leere Registrierungsformular
    */
-  async create({ view }: HttpContext) { /* die methode für die registrierungsseite. sie rendert die signup-seite. */
-    return view.render('pages/auth/signup') /* rendert die signup-seite resources/views/pages/auth/signup.edge, also das formular. */
+  async create({ view }: HttpContext) {
+    // Rendert die Seite resources/views/pages/auth/signup.edge, also das Formular
+    return view.render('pages/auth/signup')
   }
 
   /**
-   * Create a new user account and authenticate the user
+   * POST /signup – prüft die Eingaben, legt den Nutzer an,
+   * meldet ihn direkt an und leitet zum Feed weiter
    */
-  async store({ request, response, auth }: HttpContext) { /* die methode für die registrierung. sie nimmt die daten aus dem formular, prüft sie und erstellt einen neuen benutzer. */
-    const { username, email, password } = await request.validateUsing(signupValidator) /* prüft die daten aus dem formular. wenn etwas falsch ist, kommt man zurück zum formular und die fehler stehen am feld. */
-    const user = await User.create({ username, email, password, role: 'user' }) /* erstellt einen neuen benutzer mit der rolle "user" in der datenbank. das passwort wird automatisch gehasht. */
+  async store({ request, response, auth }: HttpContext) {
+    // Prüft die Formulardaten. Wenn etwas falsch ist, kommt man zurück zum Formular
+    // und die Fehlermeldungen stehen direkt am jeweiligen Feld
+    const { username, email, password } = await request.validateUsing(signupValidator)
 
-    await auth.use('web').login(user) /* loggt den benutzer ein. login erstellt eine session für den benutzer. */
-    response.redirect().toRoute('home') /* leitet den benutzer zur startseite (feed) weiter. */
+    // Erstellt den neuen Nutzer mit der Rolle "user" in der Datenbank.
+    // Die Rolle setzen wir selbst, sie kommt nie aus dem Formular (niemand kann sich zum Admin machen).
+    // Das Passwort wird automatisch gehasht.
+    const user = await User.create({ username, email, password, role: 'user' })
+
+    // Meldet den Nutzer direkt an (erstellt eine Session)
+    await auth.use('web').login(user)
+
+    // Leitet zur Startseite (Feed) weiter
+    response.redirect().toRoute('home')
   }
 }
