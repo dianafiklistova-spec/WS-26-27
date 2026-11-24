@@ -8,7 +8,11 @@
 
     <section class="panel profile">
       <div class="profile__head">
-        <span class="profile__avatar">{{ profile.initials }}</span>
+        @if(profile.profileImage)
+          <img class="profile__avatar" src="{{ profile.profileImage }}" alt="Profilfoto von {{ profile.username }}" />
+        @else
+          <span class="profile__avatar">{{ profile.initials }}</span>
+        @end
         <div>
           <h2 class="profile__name">{{ profile.username }}</h2>
           <p class="profile__meta">Dabei seit {{ profile.createdAt.toFormat('dd.MM.yyyy') }}</p>

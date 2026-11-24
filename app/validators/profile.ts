@@ -22,6 +22,15 @@ export const updateProfileValidator = vine.withMetaData<{ userId: number }>().cr
       },
     }),
   bio: vine.string().trim().maxLength(300).nullable(),
+
+  // Profilfoto ist optional. Erlaubt sind nur Bilder bis 2 MB.
+  // AdonisJS prüft den Dateityp anhand des Inhalts, nicht nur anhand der Endung.
+  avatar: vine
+    .file({
+      size: '2mb',
+      extnames: ['jpg', 'jpeg', 'png', 'webp'],
+    })
+    .optional(),
 })
 
 updateProfileValidator.messagesProvider = new SimpleMessagesProvider(
@@ -31,9 +40,13 @@ updateProfileValidator.messagesProvider = new SimpleMessagesProvider(
     'username.maxLength': 'Dein Benutzername darf höchstens {{ max }} Zeichen lang sein.',
     'username.database.unique': 'Dieser Benutzername ist leider schon vergeben.',
     'bio.maxLength': 'Deine Bio darf höchstens {{ max }} Zeichen lang sein.',
+    'avatar.file': 'Bitte wähle eine Bilddatei aus.',
+    'avatar.file.size': 'Das Profilfoto darf höchstens 2 MB groß sein.',
+    'avatar.file.extname': 'Erlaubt sind nur JPG-, PNG- und WebP-Bilder.',
   },
   {
     username: 'Benutzername',
     bio: 'Bio',
+    avatar: 'Profilfoto',
   }
 )

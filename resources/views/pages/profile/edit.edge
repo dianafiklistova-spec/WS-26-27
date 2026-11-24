@@ -1,7 +1,32 @@
 @layouts.app({ title: 'Profil bearbeiten' })
   @page({ title: 'Profil bearbeiten', description: 'So sehen dich die anderen bei deinen Spots.' })
     <section class="panel">
-      @form({ route: 'profile.update', method: 'POST', class: 'profile-form' })
+      @form({
+        route: 'profile.update',
+        method: 'POST',
+        class: 'profile-form',
+        enctype: 'multipart/form-data',
+      })
+        @field.root({ name: 'avatar' })
+          @!field.label({ text: 'Profilfoto' })
+          <div class="profile__head">
+            @if(profile.profileImage)
+              <img class="profile__avatar" src="{{ profile.profileImage }}" alt="Aktuelles Profilfoto" />
+            @else
+              <span class="profile__avatar">{{ profile.initials }}</span>
+            @end
+            <input
+              type="file"
+              name="avatar"
+              id="avatar"
+              accept="image/jpeg,image/png,image/webp"
+              class="field__input"
+            />
+          </div>
+          <p class="field__hint">JPG, PNG oder WebP, höchstens 2 MB. Ein neues Foto ersetzt das alte.</p>
+          @!field.error()
+        @end
+
         @field.root({ name: 'username' })
           @!field.label({ text: 'Benutzername' })
           @!input.control({ value: profile.username, autocomplete: 'username', required: true })
