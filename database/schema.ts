@@ -29,6 +29,42 @@ export class CitySchema extends BaseModel {
   declare name: string
 }
 
+export class SpotSchema extends BaseModel {
+  static $columns = [
+    'categoryId',
+    'cityId',
+    'createdAt',
+    'id',
+    'imagePath',
+    'locationName',
+    'subcategoryId',
+    'text',
+    'updatedAt',
+    'userId',
+  ] as const
+  $columns = SpotSchema.$columns
+  @column()
+  declare categoryId: number
+  @column()
+  declare cityId: number
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare imagePath: string | null
+  @column()
+  declare locationName: string
+  @column()
+  declare subcategoryId: number | null
+  @column()
+  declare text: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
+}
+
 export class SubcategorySchema extends BaseModel {
   static $columns = [
     'categoryId',
