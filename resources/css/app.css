@@ -1363,3 +1363,61 @@ input {
     gap: 10px;
   }
 }
+
+/* Profilseite (US-02) */
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.profile__head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.profile__avatar {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  border: 1px solid var(--line-2);
+  color: var(--muted);
+  font-size: 22px;
+  font-weight: 600;
+}
+.profile__name {
+  font-size: 20px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.profile__meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+.profile__bio {
+  white-space: pre-line;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.profile__bio--empty {
+  color: var(--muted);
+}
+.profile__section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 24px 0 8px;
+}
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.profile-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
