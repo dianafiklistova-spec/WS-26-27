@@ -308,20 +308,90 @@ input {
 /* ==========================================================================
    Marketing — floating header + centered prose card
    ========================================================================== */
-/* --- header: shared by the marketing and app layouts --- */
+
+/* ===== SPOTTED Header ===== */
+
+/* Gemeinsame Struktur für alle Header */
 .header__inner {
   width: 100%;
-  padding: 0 30px;
+  padding: 0 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
+/* Logo und Navigation links ausrichten */
+.header__left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+/* Hauptnavigation */
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Gestaltung der Navigationslinks */
+.header__nav a {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 999px;
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.header__nav a:hover {
+  background: var(--green-soft);
+}
+
+/* Benutzeraktionen rechts ausrichten */
 .header__right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
-/* transparent, over the page content (marketing layout) */
+
+/* Login, Registrierung und Profil */
+.header--bar .header__right > a:not(.btn) {
+  padding: 10px 16px;
+  border-radius: 999px;
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.header--bar .header__right > a:not(.btn):hover {
+  background: var(--green-soft);
+}
+
+/* Primäre Aktion: Spot posten */
+.header--bar .header__right .btn--primary {
+  height: 44px;
+  padding: 0 20px;
+  background: var(--primary);
+  color: var(--btn-fg);
+  border-radius: var(--r);
+  font-weight: 600;
+}
+
+/* Platzhalter für noch nicht verfügbare Funktionen */
+.header--bar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Sichtbarer Fokus bei Tastaturbedienung */
+.header--bar a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Bestehender Header für das Marketing-Layout */
 .header--floating {
   position: absolute;
   top: 0;
@@ -330,17 +400,25 @@ input {
   z-index: 10;
   padding: 22px 0;
 }
+
 .header--floating .header__inner {
   max-width: 1100px;
   margin: 0 auto;
 }
-/* solid bar above the page content (app layout) */
+
+/* Gemeinsamer Header für das App-Layout */
 .header--bar {
   display: flex;
-  height: 60px;
+  min-height: 72px;
   background: var(--card);
   border-bottom: 1px solid var(--line);
 }
+
+.header--bar .header__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
 
 .home {
   min-height: 100vh;
