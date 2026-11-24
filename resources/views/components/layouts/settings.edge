@@ -8,14 +8,14 @@
   layout itself:
   @layouts.settings({ title: 'Profile' })
 --}}
-@let(items = [])
-@layouts.app({ title: $props.get('title') ?? 'Settings' })
+@let(items = [{ label: 'Passwort', route: 'password.edit', icon: 'lucide:key-round' }])
+@layouts.app({ title: $props.get('title') ?? 'Einstellungen' })
   @page({
-    title: 'Settings',
-    description: 'Manage your account settings and preferences.',
+    title: 'Einstellungen',
+    description: 'Verwalte dein Konto.',
   })
     <div class="sidebar-layout">
-      <nav class="sidebar-layout__nav" aria-label="Settings">
+      <nav class="sidebar-layout__nav" aria-label="Einstellungen">
         @each(item in items)
           @navLink({ route: item.route, exact: true, class: 'sidebar-layout__item' })
             @if(item.icon)

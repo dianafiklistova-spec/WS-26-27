@@ -44,3 +44,14 @@ router
   })
   .prefix('admin')
   .use([middleware.auth(), middleware.admin()])
+
+/**
+ * Einstellungen: Passwort ändern (US-03)
+ */
+router
+  .group(() => {
+    router.get('password', [controllers.Password, 'edit'])
+    router.post('password', [controllers.Password, 'update'])
+  })
+  .prefix('settings')
+  .use(middleware.auth())

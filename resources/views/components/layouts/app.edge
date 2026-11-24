@@ -30,6 +30,9 @@
         @!logo({ size: 28 })
         <div class="header__right">
           @!themeToggle()
+          @link({ route: 'password.edit', class: 'btn btn--ghost btn--sm', 'aria-label': 'Einstellungen' })
+            @svg('lucide:settings', { width: 15, height: 15 })
+          @end
           @form({ route: 'session.destroy', method: 'POST' })
             <button type="submit" class="btn btn--secondary btn--sm">
               @svg('lucide:log-out', { width: 15, height: 15 })
