@@ -20,6 +20,15 @@ export class CategorySchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class CitySchema extends BaseModel {
+  static $columns = ['id', 'name'] as const
+  $columns = CitySchema.$columns
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+}
+
 export class SubcategorySchema extends BaseModel {
   static $columns = [
     'categoryId',

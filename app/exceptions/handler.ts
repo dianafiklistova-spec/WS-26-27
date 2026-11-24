@@ -11,22 +11,30 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 
   /**
    * Status pages are used to display a custom HTML pages for certain error
-   * codes. You might want to enable them in production only, but feel
-   * free to enable them in development as well.
+   * codes. Die Seiten für 403 und 404 sollen auch beim Entwickeln
+   * angezeigt werden, deshalb ist das immer aktiv.
    */
-  protected renderStatusPages = app.inProduction
+  protected renderStatusPages = true
 
   /**
    * Status pages is a collection of error code range and a callback
    * to return the HTML contents to send as a response.
+   *
+   * Die Seite für 500er-Fehler gibt es nur in Produktion. Beim Entwickeln
+   * sieht man stattdessen die Fehlerdetails mit Stacktrace.
    */
   protected statusPages: Record<StatusPageRange, StatusPageRenderer> = {
+    '403': (error, { view }) => {
+      return view.render('pages/errors/forbidden', { error })
+    },
     '404': (error, { view }) => {
       return view.render('pages/errors/not_found', { error })
     },
-    '500..599': (error, { view }) => {
-      return view.render('pages/errors/server_error', { error })
-    },
+    ...(app.inProduction && {
+      '500..599': (error, { view }) => {
+        return view.render('pages/errors/server_error', { error })
+      },
+    }),
   }
 
   /**

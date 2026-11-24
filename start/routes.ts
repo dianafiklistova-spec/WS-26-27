@@ -29,3 +29,13 @@ router
     router.post('logout', [controllers.Session, 'destroy'])
   })
   .use(middleware.auth())
+
+/**
+ * Admin-Bereich (US-09): erst Login prüfen, dann die Rolle "admin"
+ */
+router
+  .group(() => {
+    router.on('/').render('pages/admin/index').as('admin.index')
+  })
+  .prefix('admin')
+  .use([middleware.auth(), middleware.admin()])
