@@ -12,6 +12,8 @@ export type ScannedRoutes = {
     'dashboard': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
     'admin.index': { paramsTuple?: []; params?: {} }
+    'password.edit': { paramsTuple?: []; params?: {} }
+    'password.update': { paramsTuple?: []; params?: {} }
   }
   GET: {
     'home': { paramsTuple?: []; params?: {} }
@@ -19,6 +21,7 @@ export type ScannedRoutes = {
     'session.create': { paramsTuple?: []; params?: {} }
     'dashboard': { paramsTuple?: []; params?: {} }
     'admin.index': { paramsTuple?: []; params?: {} }
+    'password.edit': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
     'home': { paramsTuple?: []; params?: {} }
@@ -26,11 +29,13 @@ export type ScannedRoutes = {
     'session.create': { paramsTuple?: []; params?: {} }
     'dashboard': { paramsTuple?: []; params?: {} }
     'admin.index': { paramsTuple?: []; params?: {} }
+    'password.edit': { paramsTuple?: []; params?: {} }
   }
   POST: {
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'password.update': { paramsTuple?: []; params?: {} }
   }
 }
 declare module '@adonisjs/core/types/http' {
