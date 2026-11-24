@@ -1,0 +1,33 @@
+@layouts.app({ title: 'Mein Profil' })
+  @page({ title: 'Mein Profil' })
+    @slot('actions')
+      @link({ route: 'profile.edit', class: 'btn btn--secondary btn--sm' })
+        Profil bearbeiten
+      @end
+    @end
+
+    <section class="panel profile">
+      <div class="profile__head">
+        <span class="profile__avatar">{{ profile.initials }}</span>
+        <div>
+          <h2 class="profile__name">{{ profile.username }}</h2>
+          <p class="profile__meta">Dabei seit {{ profile.createdAt.toFormat('dd.MM.yyyy') }}</p>
+        </div>
+      </div>
+
+      @if(profile.bio)
+        <p class="profile__bio">{{ profile.bio }}</p>
+      @else
+        <p class="profile__bio profile__bio--empty">Du hast noch keine Bio geschrieben.</p>
+      @end
+    </section>
+
+    {{-- Die eigenen Spots kommen dazu, sobald es die Tabelle spots gibt (US-04) --}}
+    <section class="profile__spots">
+      <h2 class="profile__section-title">Meine Spots</h2>
+      <div class="empty">
+        <p>Du hast noch keine Spots geteilt.</p>
+      </div>
+    </section>
+  @end
+@end

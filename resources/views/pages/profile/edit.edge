@@ -1,0 +1,33 @@
+@layouts.app({ title: 'Profil bearbeiten' })
+  @page({ title: 'Profil bearbeiten', description: 'So sehen dich die anderen bei deinen Spots.' })
+    <section class="panel">
+      @form({ route: 'profile.update', method: 'POST', class: 'profile-form' })
+        @field.root({ name: 'username' })
+          @!field.label({ text: 'Benutzername' })
+          @!input.control({ value: profile.username, autocomplete: 'username', required: true })
+          @!field.error()
+        @end
+
+        @field.root({ name: 'bio' })
+          @!field.label({ text: 'Bio' })
+          @!textarea.control({
+            value: profile.bio,
+            rows: 4,
+            maxlength: 300,
+            class: 'field__input',
+            placeholder: 'Ein paar Worte über dich',
+          })
+          <p class="field__hint">Höchstens 300 Zeichen.</p>
+          @!field.error()
+        @end
+
+        <div class="profile-form__actions">
+          @!button({ text: 'Speichern', type: 'submit' })
+          @link({ route: 'profile.show', class: 'btn btn--ghost' })
+            Abbrechen
+          @end
+        </div>
+      @end
+    </section>
+  @end
+@end
