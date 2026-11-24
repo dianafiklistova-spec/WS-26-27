@@ -9,7 +9,7 @@
 @let(pageTitle = $props.get('title'))
 <!DOCTYPE html>
 <html
-  lang="en-us"
+  lang="de"
   data-theme="{{
     request.plainCookie('app_theme', {
       defaultValue: 'light',
@@ -20,7 +20,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ pageTitle ? `${pageTitle} - AdonisJS` : 'AdonisJS — Starter Kit' }}</title>
+    <title>{{ pageTitle ? `${pageTitle} – SPOTTED` : 'SPOTTED' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('dumper')
   </head>
@@ -56,7 +56,9 @@
       </div>
     </nav>
 
-    <div class="app-main">{{{ await $slots.main() }}}</div>
+
+    <main class="app-main">{{{ await $slots.main() }}}</main> {{-- div durch main ersetzt, um den Hauptinhalt der Seite
+     semantisch zu kennzeichnen und die Barrierefreiheit zu verbessern. --}}
     @include('partials/flash_alerts')
   </body>
 </html>
