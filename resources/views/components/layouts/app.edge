@@ -1,15 +1,10 @@
-{{--
-  Top-level app navigation. Add an entry here for every new area of your
-  app, and it shows up in the navigation bar with its active state handled.
---}}
-@let(nav = [
-  { label: 'Dashboard', route: 'dashboard', icon: 'lucide:house' },
-  { label: 'Profil', route: 'profile.show', icon: 'lucide:user' },
-])
+
+{{-- Seitentitel der jeweiligen Seite übernehmen --}}
 @let(pageTitle = $props.get('title'))
+
 <!DOCTYPE html>
 <html
-  lang="en-us"
+  lang="de"
   data-theme="{{
     request.plainCookie('app_theme', {
       defaultValue: 'light',
@@ -20,43 +15,98 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ pageTitle ? `${pageTitle} - AdonisJS` : 'AdonisJS — Starter Kit' }}</title>
+    <title>{{ pageTitle ? `${pageTitle} – SPOTTED` : 'SPOTTED' }}</title>
+
+    {{-- Globale CSS- und JavaScript-Dateien einbinden --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('dumper')
   </head>
+
   <body>
+
+    {{-- Gemeinsamer Header für die SPOTTED-Seiten --}}
     <header class="header header--bar">
       <div class="header__inner">
-        @!logo({ size: 28 })
-        <div class="header__right">
-          @!themeToggle()
-          @link({ route: 'password.edit', class: 'btn btn--ghost btn--sm', 'aria-label': 'Einstellungen' })
-            @svg('lucide:settings', { width: 15, height: 15 })
-          @end
-          @form({ route: 'session.destroy', method: 'POST' })
-            <button type="submit" class="btn btn--secondary btn--sm">
-              @svg('lucide:log-out', { width: 15, height: 15 })
-              Log out
-            </button>
-          @end
+
+        {{-- Linker Bereich: Logo und Hauptnavigation --}}
+        <div class="header__left">
+          @!logo({ size: 28 })
+
+          {{-- Hauptnavigation direkt in den Header integrieren --}}
+          <nav class="header__nav" aria-label="Hauptnavigation">
+            <a href="/">Feed</a>
+
+            {{-- Admin-Bereich nur für Administratoren anzeigen --}}
+            @if(auth.user && auth.user.role === 'admin')
+              <a href="/admin">Admin-Bereich</a>
+            @end
+          </nav>
         </div>
+
+        {{-- Rechter Bereich: Aktionen abhängig vom Login-Status --}}
+        <div class="header__right">
+
+          @if(auth.user)
+
+            {{-- Navigation für angemeldete Nutzer --}}
+
+            {{-- TODO: Route zum Erstellen eines Spots ergänzen --}}
+            <button type="button" class="btn btn--primary" disabled>
+              + Spot posten
+            </button>
+
+            <a href="/profile">Mein Profil</a>
+
+            {{-- Bestehende Funktionen vorerst beibehalten --}}
+            @!themeToggle()
+
+            @link({ route: 'password.edit', class: 'btn btn--ghost btn--sm', 'aria-label': 'Einstellungen' })
+              @svg('lucide:settings', { width: 15, height: 15 })
+            @end
+
+            {{-- Abmeldung über eine POST-Anfrage --}}
+            @form({ route: 'session.destroy', method: 'POST' })
+              <button type="submit" class="btn btn--secondary btn--sm">
+                Abmelden
+              </button>
+            @end
+
+          @else
+
+            {{-- Navigation für nicht angemeldete Nutzer --}}
+            <a href="/login">Login</a>
+            <a href="/signup">Registrieren</a>
+
+            {{-- Gäste müssen sich anmelden, bevor sie einen Spot erstellen --}}
+            <a href="/login" class="btn btn--primary">
+              + Spot posten
+            </a>
+
+          @end
+
+        </div>
+         {{-- Menü-Button für mobile Geräte --}}
+        <button
+          type="button"
+          class="header__menu-toggle"
+          id="header-menu-toggle"
+          aria-label="Menü öffnen"
+          aria-expanded="false"
+          aria-controls="header-nav header-actions"
+        >
+          <span id="header-menu-icon" aria-hidden="true">☰</span>
+        </button>
+
       </div>
     </header>
 
-    <nav class="subnav">
-      <div class="subnav__inner">
-        @each(item in nav)
-          @navLink({ route: item.route, class: 'subnav__item' })
-            @if(item.icon)
-              @svg(item.icon, { width: 14, height: 14 })
-            @end
-            {{ item.label }}
-          @end
-        @end
-      </div>
-    </nav>
+    {{-- Hauptinhalt der jeweiligen Seite --}}
+    <main class="app-main">
+      {{{ await $slots.main() }}}
+    </main>
 
-    <div class="app-main">{{{ await $slots.main() }}}</div>
+    {{-- Erfolgs- und Fehlermeldungen anzeigen --}}
     @include('partials/flash_alerts')
+
   </body>
 </html>
